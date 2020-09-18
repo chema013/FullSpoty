@@ -1,8 +1,9 @@
 import app from "./app";
 
 let main = () => {
-    app.listen(8080);
-    console.log('Server on port 8080');
+    app.listen(process.env.PORT, () => {
+        console.log('Escuchando puerto', process.env.PORT);
+    });
 }
 
 main();
