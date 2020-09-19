@@ -18,20 +18,32 @@ export class HomeComponent implements OnInit {
     this.loading = true;
     this.error = false;
 
-    this.spotify.getNewReleases()
-      .subscribe( (data: any) => {
-        this.nuevasCanciones = data;
-        console.log(data);
-        this.loading = false;
-      }, ( errorServicio ) => {
-        this.loading = false;
-        this.error = true;
-        this.mensajeError = errorServicio.error.mesage;
-        console.log( errorServicio);
-      });
+    if (this.spotify.token ){
+      console.log('existe');
+      this.cargarDatos();
+    }else{
+      console.log('no existe');
+      setTimeout(() => {
+        this.cargarDatos();
+      }, 2000);
+    }
   }
 
   ngOnInit(): void {
+  }
+
+  cargarDatos(): any {
+    this.spotify.getNewReleases()
+    .subscribe( (data: any) => {
+      this.nuevasCanciones = data;
+      console.log(data);
+      this.loading = false;
+    }, ( errorServicio ) => {
+      this.loading = false;
+      this.error = true;
+      this.mensajeError = errorServicio.error.mesage;
+      console.log( errorServicio);
+    });
   }
 
 }

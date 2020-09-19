@@ -3,7 +3,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { url } from '../../environments/environment';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -14,13 +13,15 @@ export class SpotifyService {
 
   constructor( private http: HttpClient ) {
     console.log('Spotify service listo');
-    this.tokenClaro();
+    this.getToken();
   }
 
   getToken(): any {
-    return this.http.get( url ).toPromise()
-      .then(res => res)
-      .catch(err => err.error);
+    this.http.get( url )
+      .subscribe( ( apiData: any ) => {
+        this.token = apiData.token.access_token;
+        console.log('Get token: ', this.token );
+      });
   }
 
   async tokenClaro(): Promise<any> {
@@ -30,17 +31,12 @@ export class SpotifyService {
   }
 
   getQuery( query: string ): any {
-    const url = `https://api.spotify.com/v1/${ query }`;
-    // console.log(this.token);
+    const URL = `https://api.spotify.com/v1/${ query }`;
+    console.log('getQuery', this.token);
     const headers = new HttpHeaders({
       Authorization: `Bearer ${this.token}`
     });
-    try {
-      return this.http.get(url, { headers });
-    } catch (error) {
-      this.tokenClaro();
-      return this.http.get(url, { headers });
-    }
+    return this.http.get(URL, { headers });
   }
 
   getTrack( track: string ): any {
